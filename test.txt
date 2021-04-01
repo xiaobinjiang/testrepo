@@ -1,2 +1,2 @@
-README.md
-test.txt
+this is a test file
+
