@@ -1,5 +1,10 @@
 this is a test file
 
+<<<<<<< HEAD
 11111 
 dddddd
 2222 
+=======
+1111 
+add from github
+>>>>>>> c7bfca857d4ad3897ab8e52493c9e86232ad064c
