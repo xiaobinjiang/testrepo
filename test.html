@@ -11,18 +11,18 @@
     <!-- Tempus Dominus JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.16/dist/js/tempus-dominus.min.js"
         crossorigin="anonymous"></script>
-
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <!-- Tempus Dominus Styles -->
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.7.16/dist/css/tempus-dominus.min.css"
         crossorigin="anonymous">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-        crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" />
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" id="app">
         <div class="alert alert-info" id="info"></div>
         <div class="row">
             <div class="col-sm-12" id="htmlTarget">
@@ -30,39 +30,77 @@
                 <div class="input-group log-event" id="datetimepicker1" data-td-target-input="nearest"
                     data-td-target-toggle="nearest">
                     <input id="datetimepicker1Input" type="text" class="form-control"
-                        data-td-target="#datetimepicker1" />
+                        data-td-target="#datetimepicker1" 
+                        v-model="date"
+                        @change="onChange"/>
                     <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
                         <i class="bi bi-calendar"></i>
                     </span>
                 </div>
             </div>
         </div>
+        <ul v-for="time in availableTime">
+            <li>
+                {{ time }}
+            </li>
+        </ul>
+    </div>
 
-</body>
-<script>
-    new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'), {
-        display: {
-            theme: 'light',
-            components: {
-                calendar: true,
-                date: true,
-                month: true,
-                year: true,
-                decades: true,
-                clock: false,
-                hours: false,
-                minutes: false,
-                seconds: false
+
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    date: '',
+                    holidayOrFullyReservedDay: ['2023-11-03', '2023-11-13', '2023-11-23'],
+                    availableTime:[],
+                }
             },
-        },
-        localization: {
-            locale: 'ja',
-            format: 'yyyy-MM-dd',
-        },
-        restrictions: {
-            disabledDates: ['2023-11-03', '2023-11-13', '2023-11-23'],
-        },
-    });
-</script>
+            mounted() {
+                new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'), {
+                    display: {
+                        theme: 'dark',
+                        components: {
+                            calendar: true,
+                            date: true,
+                            month: true,
+                            year: true,
+                            decades: true,
+                            clock: false,
+                            hours: false,
+                            minutes: false,
+                            seconds: false
+                        },
+                    },
+                    localization: {
+                        locale: 'ja',
+                        format: 'yyyy-MM-dd',
+                    },
+                    restrictions: {
+                        disabledDates: this.holidayOrFullyReservedDay,
+                    },
+                });
+            },
+            methods: {
+                onChange(v) {
+                    this.date = v.target.value
+                    console.log('changed')
+                    console.log(this.date)
+                    const now = new Date();
+                    const day = now.getDay(); // returns a number representing the day of the week, starting with 0 for Sunday
+                    const hours = now.getHours();
+                    const minutes = now.getMinutes();
+                    const seconds = now.getSeconds()
+                    const time = `${hours}:${minutes}:${seconds}`
+                    this.availableTime=[time,time,time]
+                    return true;
+                }
+            }
+        }).mount('#app')
+
+    </script>
+</body>
 
 </html>
